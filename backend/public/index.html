@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Tools</title>
+</head>
+<body>
+  <h1>Login</h1>
+  <form id="loginForm">
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button type="submit">Login</button>
+  </form>
+
+  <h2>AI Tools</h2>
+  <table id="toolsTable" border="1">
+    <thead>
+      <tr><th>Name</th><th>Year</th><th>Cost</th><th>Users</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: document.getElementById('username').value,
+          password: document.getElementById('password').value,
+        })
+      });
+      const data = await res.json();
+      localStorage.setItem('token', data.token);
+
+      const toolsRes = await fetch('/ai-tools', {
+        headers: {
+          Authorization: 'Bearer ' + data.token
+        }
+      });
+      const tools = await toolsRes.json();
+      const table = document.querySelector('#toolsTable tbody');
+      tools.forEach(tool => {
+        const row = `<tr><td>${tool.name}</td><td>${tool.year_published}</td><td>${tool.cost_usd_per_month}</td><td>${tool.average_monthly_users}</td></tr>`;
+        table.innerHTML += row;
+      });
+    });
+  </script>
+</body>
+</html>

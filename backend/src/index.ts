@@ -8,6 +8,7 @@ import aiToolsRoutes from './routes/aiTools';
 
 dotenv.config();
 const app = express();
+const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(morgan('combined'));
 app.use(bodyParser.json());
@@ -16,4 +17,4 @@ app.use('/', express.static('public'));
 app.use('/login', authRoutes);
 app.use('/ai-tools', aiToolsRoutes);
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
